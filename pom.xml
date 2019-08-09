@@ -1,0 +1,99 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.timoponce</groupId>
+	<artifactId>db-migrations</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Database migrations setup with JOOQ and FlywayDB</name>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<jooq.version>3.11.11</jooq.version>
+		<h2.version>1.4.199</h2.version>
+		<junit.version>4.11</junit.version>
+		<db.url>jdbc:h2:./target/build-db</db.url>
+		<db.username>sa</db.username>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq</artifactId>
+			<version>${jooq.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>5.2.4</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>migrate</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<url>${db.url}</url>
+					<user>${db.username}</user>
+					<locations>
+						<location>filesystem:src/main/resources/db/migration</location>
+					</locations>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<version>${jooq.version}</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<jdbc>
+						<url>${db.url}</url>
+						<user>${db.username}</user>
+					</jdbc>
+					<generator>
+						<database>
+							<includes>.*</includes>
+							<inputSchema>BOOKSTORE</inputSchema>
+						</database>
+						<target>
+							<packageName>org.timoponce.data</packageName>
+							<directory>target/generated-sources/data</directory>
+						</target>
+					</generator>					
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
