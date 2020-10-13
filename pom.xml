@@ -14,7 +14,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jooq.version>3.11.11</jooq.version>
 		<h2.version>1.4.199</h2.version>
-		<junit.version>4.11</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<db.url>jdbc:h2:./target/build-db</db.url>
 		<db.username>sa</db.username>
 	</properties>
